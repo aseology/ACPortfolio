@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About — Ashley Crockett</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#0e0e18;--card:#13131e;--border:rgba(255,255,255,0.07);--green:#00ff8c;--pink:#ff2d82;--text:#f0f0f8;--muted:#5a5a72;--muted2:#888899;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;min-height:100vh;cursor:none;overflow-x:hidden;}
+  .cursor{position:fixed;width:10px;height:10px;background:var(--pink);border-radius:50%;pointer-events:none;z-index:9999;}
+  .cursor-ring{position:fixed;width:32px;height:32px;border:1.5px solid var(--green);border-radius:50%;pointer-events:none;z-index:9998;opacity:.5;}
+  .grid-bg{position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);background-size:60px 60px;}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.85)}}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+  @keyframes floatA{0%,100%{transform:translateY(0) rotate(var(--r))}50%{transform:translateY(-6px) rotate(var(--r))}}
+  @keyframes floatB{0%,100%{transform:translateY(0) rotate(var(--r))}50%{transform:translateY(5px) rotate(var(--r))}}
+
+  nav{position:fixed;top:0;left:0;right:0;z-index:500;height:60px;padding:0 48px;display:flex;align-items:center;justify-content:space-between;backdrop-filter:blur(24px);background:rgba(8,8,16,.85);border-bottom:1px solid var(--border);}
+  .nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;letter-spacing:-.02em;display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--text);}
+  .nav-dot{width:8px;height:8px;border-radius:50%;background:var(--pink);animation:pulse 2s infinite;}
+  .nav-links{display:flex;gap:32px;list-style:none;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);}
+  .nav-links a{color:inherit;text-decoration:none;transition:color .2s;}
+  .nav-links a:hover{color:var(--green);}
+  .nav-links a.active{color:var(--green);}
+  ::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-track{background:var(--bg);}::-webkit-scrollbar-thumb{background:var(--pink);border-radius:2px;}
+
+  /* ── PAGE ── */
+  .page{padding:80px 0 120px;position:relative;z-index:1;}
+
+  /* ── HERO SECTION ── */
+  .about-hero{
+    padding:40px 48px 0;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:0;
+    align-items:start;
+    min-height:calc(100vh - 80px);
+  }
+
+  /* LEFT — name + bio */
+  .about-left{
+    padding:60px 60px 60px 0;
+    position:relative;
+    z-index:2;
+    animation:fadeUp .6s ease both .1s;
+  }
+
+  .about-eyebrow{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--green);margin-bottom:20px;}
+
+  .about-name{
+    font-family:'Syne',sans-serif;font-weight:800;
+    font-size:clamp(56px,7vw,96px);
+    letter-spacing:-.05em;line-height:.88;
+    margin-bottom:8px;
+  }
+  .about-name .serif{font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;color:var(--pink);}
+
+  .about-role{
+    font-family:'DM Mono',monospace;
+    font-size:13px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--green);
+    margin-bottom:40px;
+  }
+
+  /* Bio */
+  .about-bio{
+    font-size:12.5px;line-height:2;color:var(--muted2);
+    max-width:480px;
+    border-left:2px solid var(--pink);
+    padding-left:24px;
+  }
+  .about-bio p{margin-bottom:20px;}
+  .about-bio p:last-child{margin-bottom:0;}
+  .about-bio strong{color:var(--text);font-weight:400;}
+
+  /* Slow down pull quote */
+  .slowdown-quote{
+    margin:120px 48px 0;
+    padding:60px 56px 48px;
+    background:rgba(8,8,14,.96);
+    border:1px solid rgba(255,45,130,.12);
+    border-radius:24px;
+    display:block;
+    position:relative;
+    z-index:10;
+    backdrop-filter:blur(20px);
+  }
+  .slowdown-quote p{
+    font-family:'Instrument Serif',serif;
+    font-style:italic;
+    font-size:clamp(18px,2.2vw,26px);
+    line-height:1.7;
+    letter-spacing:-.01em;
+    color:rgba(240,240,248,.85);
+    max-width:900px;
+    margin:0 auto;
+    text-align:center;
+  }
+  .slowdown-quote p span{color:var(--pink);}
+
+  /* ── RIGHT — photo collage ── */
+  .about-right{
+    position:relative;
+    height:820px;
+    animation:fadeUp .7s ease both .2s;
+    overflow:visible;
+  }
+
+  /* Photo */
+  .about-photo-frame{
+    position:absolute;
+    top:20px; left:50%;
+    transform:translateX(-50%);
+    width:380px;
+    z-index:5;
+  }
+  /* Subtle pink glow only — no solid cards */
+  .about-photo-frame::before{
+    content:'';
+    position:absolute;
+    inset:0;
+    border-radius:2px;
+    box-shadow:0 0 60px rgba(255,45,130,.25), 0 0 120px rgba(255,45,130,.1);
+    z-index:-1;
+    pointer-events:none;
+  }
+  .about-photo{
+    width:100%;display:block;
+    border-radius:2px;
+    filter:contrast(1.05);
+  }
+
+  /* Floating fact pills */
+  .fact{
+    position:absolute;
+    font-family:'DM Mono',monospace;
+    font-size:11px;
+    padding:8px 18px;
+    border-radius:100px;
+    background:rgba(12,12,20,.92);
+    border:1px solid rgba(255,255,255,.1);
+    backdrop-filter:blur(16px);
+    box-shadow:0 8px 28px rgba(0,0,0,.5);
+    color:var(--text);
+    white-space:nowrap;
+    z-index:8;
+    cursor:default;
+    transition:transform .3s ease, box-shadow .3s;
+  }
+  .fact:hover{box-shadow:0 14px 40px rgba(0,0,0,.6);filter:brightness(1.1);}
+
+  /* Facts orbit well outside the image edges */
+  .f1{top:30px;   left:-280px;  --r:-6deg; animation:floatA 4s ease-in-out infinite;     border-color:rgba(255,45,130,.3);color:var(--pink);}
+  .f2{top:20px;   right:-280px; --r:5deg;  animation:floatB 3.5s ease-in-out infinite .3s;}
+  .f3{top:190px;  left:-300px;  --r:-3deg; animation:floatA 5s ease-in-out infinite .6s;  border-color:rgba(0,255,140,.3);color:var(--green);}
+  .f4{top:200px;  right:-300px; --r:4deg;  animation:floatB 4.2s ease-in-out infinite .9s;}
+  .f5{top:370px;  left:-280px;  --r:-4deg; animation:floatA 3.8s ease-in-out infinite .4s; border-color:rgba(0,255,140,.3);color:var(--green);}
+  .f6{top:380px;  right:-280px; --r:3deg;  animation:floatB 4.5s ease-in-out infinite .7s; border-color:rgba(255,45,130,.3);color:var(--pink);}
+  .f7{top:540px;  left:-270px;  --r:-5deg; animation:floatA 4.8s ease-in-out infinite 1s;}
+  .f8{top:550px;  right:-270px; --r:2deg;  animation:floatB 3.2s ease-in-out infinite .2s;}
+  .f9{top:700px;  left:50%;     --r:-2deg; animation:floatA 4s ease-in-out infinite .5s; border-color:rgba(255,45,130,.3);color:var(--pink); transform:translateX(-50%) rotate(-2deg);}
+
+  /* SVG doodle arrows */
+  .doodle{position:absolute;pointer-events:none;z-index:6;opacity:.6;}
+  .da1{top:50px;left:80px;width:55px;}
+  .da2{top:200px;right:80px;width:55px;transform:scaleX(-1);}
+  .da3{top:420px;left:60px;width:40px;transform:rotate(30deg);}
+
+
+
+  /* ── MOBILE ── */
+ /* hamburger hidden on desktop */
+  .hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;padding:4px;cursor:pointer;}
+  .hamburger span{width:22px;height:2px;background:var(--text);border-radius:2px;display:block;}
+
+  @media(max-width:900px){
+    nav{padding:0 20px;}
+    .hamburger{display:flex;}
+    .nav-links{
+      display:none;
+      flex-direction:column;
+      position:fixed;
+      top:60px;left:0;right:0;
+      background:rgba(8,8,16,.97);
+      padding:24px 32px;
+      gap:20px;
+      border-bottom:1px solid var(--border);
+      list-style:none;
+    }
+    .nav-links.open{display:flex;}
+    .about-hero{grid-template-columns:1fr;padding:20px 24px 0;}
+    .about-left{padding:40px 0;}
+    .about-right{height:500px;margin:0 auto;width:100%;max-width:400px;}
+    .fact{font-size:14px;padding:6px 14px;}
+    .f1{left:-20px;} .f3{left:-30px;} .f5{left:-20px;} .f7{left:0;}
+  }
+
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav>
+  <a href="index.html" class="nav-logo"><div class="nav-dot"></div>AC.</a>
+  <ul class="nav-links">
+    <li><a href="skills.html">Skills</a></li>
+    <li><a href="work.html">Work</a></li>
+    <li><a href="about.html" class="active">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+ <button class="hamburger" id="ham" onclick="document.querySelector('.nav-links').classList.toggle('open')">
+  <span></span><span></span><span></span>
+</button> 
+</nav>
+
+<div class="page">
+  <div class="about-hero">
+
+    <!-- LEFT: name + bio -->
+    <div class="about-left">
+      <div class="about-eyebrow">03 — About</div>
+      <h1 class="about-name">Ashley<br><span class="serif">Crockett.</span></h1>
+      <div class="about-role">PM · Builder · Community Architect</div>
+
+      <div class="about-bio">
+        <p>I'm Ashley — a PM, builder, and community architect from Detroit. <strong>And yes, also a mom.</strong></p>
+
+        <p>My path here wasn't traditional — and that's exactly the point. I grew up <strong>homeschooled</strong>, went dual enrolled, and built my foundation outside the system before the system had a chance to define me. Before tech, I worked in <strong>healthcare</strong> — where I learned what it actually means to design for people when the stakes are real.</p>
+
+        <p>I got into product by doing the work before I had the title. Writing PRDs. Leading teams. Building an audience of <strong>100k+</strong> before I had a brand strategy. I hold a <strong>Google PM certification</strong> and a <strong>Lean Six Sigma Green Belt</strong>, placed <strong>top 6 out of 90+</strong> at TechTown's Mobility Week Hackathon, and shipped a SaaS product called <strong>PulsePoint</strong>.</p>
+
+        <p>I manage community at <strong>DevsCreate313</strong>, host events on cognitive accessibility, and founded a bootcamp on boundaries — with a second one already in the works.</p>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: photo collage -->
+    <div class="about-right">
+
+      <!-- Photo -->
+      <div class="about-photo-frame">
+        <img src="animatedash.png" alt="Ashley Crockett" class="about-photo">
+      </div>
+
+      <!-- Floating facts -->
+      <div class="fact f1">📍 Detroit</div>
+      <div class="fact f2">👩‍👧 Mom first</div>
+      <div class="fact f3">🏥 Healthcare background</div>
+      <div class="fact f4">📚 Homeschooled → college</div>
+      <div class="fact f5">🏋️ Gym as meditation</div>
+      <div class="fact f6">🍕 Favorite food: pizza</div>
+      <div class="fact f7">✈️ Traveller</div>
+      <div class="fact f8">📖 Always reading</div>
+      <div class="fact f9">💡 100k+ following</div>
+
+      <!-- Doodle arrows -->
+      <svg class="doodle da1" viewBox="0 0 55 40" fill="none">
+        <path d="M5 35 Q25 5 50 12" stroke="#ff2d82" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M44 8 L52 15 M52 15 L43 17" stroke="#ff2d82" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+      <svg class="doodle da2" viewBox="0 0 55 40" fill="none">
+        <path d="M5 35 Q25 5 50 12" stroke="#00ff8c" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M44 8 L52 15 M52 15 L43 17" stroke="#00ff8c" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+      <svg class="doodle da3" viewBox="0 0 40 55" fill="none">
+        <path d="M20 5 Q8 28 20 50" stroke="#ff2d82" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="4 4"/>
+      </svg>
+    </div>
+
+  </div><!-- end about-hero -->
+
+  <!-- FULL WIDTH QUOTE -->
+  <div class="slowdown-quote">
+    <p>Outside of work I'm reading, cooking, or at the gym. Not to escape — but to <span>slow down</span>. Most people rush past the details that matter. I built my whole approach around stopping there. It's where the options nobody else sees live — and the engine behind everything I do.</p>
+  </div>
+
+</div><!-- end page -->
+
+<script>
+  const cursor=document.getElementById("cursor"),ring=document.getElementById("cursorRing");
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener("mousemove",e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx-5+"px";cursor.style.top=my-5+"px";});
+  (function a(){rx+=(mx-rx-16)*.1;ry+=(my-ry-16)*.1;ring.style.left=rx+"px";ring.style.top=ry+"px";requestAnimationFrame(a);})();
+</script>
+</body>
+</html>

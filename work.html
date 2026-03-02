@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Work — Ashley Crockett</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#0c0c10;--card:#13131e;--border:rgba(255,255,255,0.07);--green:#00ff8c;--pink:#ff2d82;--text:#f0f0f8;--muted:#5a5a72;--muted2:#888899;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;min-height:100vh;cursor:none;overflow-x:hidden;}
+  .cursor{position:fixed;width:10px;height:10px;background:var(--pink);border-radius:50%;pointer-events:none;z-index:9999;}
+  .cursor-ring{position:fixed;width:32px;height:32px;border:1.5px solid var(--green);border-radius:50%;pointer-events:none;z-index:9998;opacity:.5;}
+  .grid-bg{position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);background-size:60px 60px;}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.85)}}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+  @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+  @keyframes screenGlow{0%,100%{opacity:.6}50%{opacity:1}}
+
+  /* NAV */
+  nav{position:fixed;top:0;left:0;right:0;z-index:500;height:60px;padding:0 48px;display:flex;align-items:center;justify-content:space-between;backdrop-filter:blur(24px);background:rgba(8,8,16,.85);border-bottom:1px solid var(--border);}
+  .nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;letter-spacing:-.02em;display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--text);}
+  .nav-dot{width:8px;height:8px;border-radius:50%;background:var(--pink);animation:pulse 2s infinite;}
+  .nav-links{display:flex;gap:32px;list-style:none;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);}
+  .nav-links a{color:inherit;text-decoration:none;transition:color .2s;}
+  .nav-links a:hover{color:var(--green);}
+  .nav-links a.active{color:var(--pink);}
+  ::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-track{background:var(--bg);}::-webkit-scrollbar-thumb{background:var(--pink);border-radius:2px;}
+
+  /* PAGE */
+  .page{padding:80px 0 120px;position:relative;z-index:1;}
+
+  /* PROJECT LIST — top selector */
+  .proj-selector{padding:40px 48px 0;animation:fadeUp .5s ease both;}
+  .sel-eyebrow{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--pink);margin-bottom:20px;}
+  .sel-title{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(40px,6vw,72px);letter-spacing:-.05em;line-height:.9;margin-bottom:48px;}
+  .sel-title .s{font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;color:var(--pink);}
+
+  .proj-tabs{display:flex;gap:0;border:1px solid var(--border);border-radius:16px;overflow:hidden;background:var(--border);width:fit-content;}
+  .ptab{padding:14px 28px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;background:var(--card);transition:all .25s;border:none;color:var(--muted);font-family:'DM Mono',monospace;border-right:1px solid var(--border);}
+  .ptab:last-child{border-right:none;}
+  .ptab:hover{color:var(--text);background:#181826;}
+  .ptab.active{background:var(--pink);color:#fff;letter-spacing:.16em;}
+
+  /* ── DESKTOP MOCKUP STAGE ── */
+  .project-stage{padding:48px 48px 0;display:none;animation:fadeUp .4s ease both;}
+  .project-stage.active{display:block;}
+
+  /* Mac desktop shell */
+  .mac-shell{
+    background:#1a1a28;
+    border-radius:20px;
+    border:1px solid rgba(255,255,255,.1);
+    box-shadow:0 40px 100px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.04),inset 0 1px 0 rgba(255,255,255,.08);
+    overflow:hidden;
+  }
+
+  /* Mac top bar */
+  .mac-bar{
+    height:36px;background:#111118;
+    display:flex;align-items:center;padding:0 16px;gap:8px;
+    border-bottom:1px solid rgba(255,255,255,.06);
+    position:relative;
+  }
+  .mac-btn{width:12px;height:12px;border-radius:50%;}
+  .mac-btn.r{background:#ff5f57;}
+  .mac-btn.y{background:#febc2e;}
+  .mac-btn.g{background:#28c840;}
+  .mac-url{position:absolute;left:50%;transform:translateX(-50%);font-size:10px;color:var(--muted);background:rgba(255,255,255,.05);padding:4px 20px;border-radius:6px;letter-spacing:.04em;}
+
+  /* Mac desktop wallpaper area */
+  .mac-desktop{
+    background:linear-gradient(135deg,#0d0d1a 0%,#130d1a 50%,#0d1a13 100%);
+    padding:32px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:24px;
+    min-height:560px;
+    position:relative;
+  }
+
+  /* Subtle desktop grid */
+  .mac-desktop::before{
+    content:'';position:absolute;inset:0;pointer-events:none;
+    background-image:radial-gradient(rgba(255,255,255,.03) 1px,transparent 1px);
+    background-size:24px 24px;
+  }
+
+  /* ── LEFT: spotlight/browser + timeline ── */
+  .desktop-left{display:flex;gap:28px;align-items:flex-start;position:relative;z-index:1;}
+
+  /* ── OPTION D: Spotlight card (iOS apps) ── */
+  .spotlight{
+    flex-shrink:0;width:200px;
+    border-radius:24px;
+    overflow:hidden;
+    position:relative;
+    box-shadow:0 20px 60px rgba(0,0,0,.7);
+  }
+  .spotlight-glow{
+    position:absolute;inset:0;border-radius:24px;
+    background:radial-gradient(ellipse at 50% 0%,var(--proj-color,var(--pink)) 0%,transparent 70%);
+    opacity:.25;pointer-events:none;z-index:1;
+  }
+  .spotlight-screen{
+    width:100%;aspect-ratio:9/16;
+    background:var(--proj-screen-bg,#1a0d20);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:10px;position:relative;
+    border:1.5px solid rgba(255,255,255,.1);
+    border-radius:24px;
+  }
+  .spotlight-ico{font-size:48px;filter:drop-shadow(0 4px 16px rgba(0,0,0,.4));}
+  .spotlight-name{font-family:'Syne',sans-serif;font-weight:800;font-size:14px;letter-spacing:-.02em;color:rgba(255,255,255,.9);}
+  .spotlight-sub{font-size:8px;color:rgba(255,255,255,.4);letter-spacing:.12em;text-transform:uppercase;}
+  .spotlight-badge{
+    position:absolute;bottom:14px;left:50%;transform:translateX(-50%);
+    background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);
+    border-radius:100px;padding:4px 12px;
+    font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.6);
+    backdrop-filter:blur(8px);white-space:nowrap;
+  }
+
+  /* ── OPTION B: Browser window (web projects) ── */
+  .browser{
+    flex-shrink:0;width:260px;
+    background:#0e0e1a;
+    border-radius:12px;
+    border:1px solid rgba(255,255,255,.1);
+    box-shadow:0 20px 60px rgba(0,0,0,.7);
+    overflow:hidden;
+  }
+  .browser-bar{
+    height:32px;background:#111118;
+    display:flex;align-items:center;padding:0 10px;gap:6px;
+    border-bottom:1px solid rgba(255,255,255,.06);
+  }
+  .browser-dot{width:8px;height:8px;border-radius:50%;}
+  .browser-dot.r{background:#ff5f57;} .browser-dot.y{background:#febc2e;} .browser-dot.g{background:#28c840;}
+  .browser-url{flex:1;margin-left:8px;background:rgba(255,255,255,.06);border-radius:4px;height:18px;display:flex;align-items:center;padding:0 8px;}
+  .browser-url span{font-size:8px;color:var(--muted);letter-spacing:.04em;overflow:hidden;white-space:nowrap;}
+  .browser-screen{
+    width:100%;aspect-ratio:4/3;
+    background:var(--proj-screen-bg,#0d1a10);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:10px;position:relative;overflow:hidden;
+  }
+  .browser-screen::before{
+    content:'';position:absolute;inset:0;
+    background:radial-gradient(ellipse at 50% 0%,var(--proj-color,var(--green)) 0%,transparent 65%);
+    opacity:.1;pointer-events:none;
+  }
+  .browser-ico{font-size:40px;}
+  .browser-name{font-family:'Syne',sans-serif;font-weight:800;font-size:13px;color:rgba(255,255,255,.8);}
+  .browser-sub{font-size:8px;color:rgba(255,255,255,.35);letter-spacing:.1em;text-transform:uppercase;}
+
+  /* ── TIMELINE ── */
+  .timeline{flex:1;padding-top:8px;}
+  .tl-label{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:20px;}
+
+  .tl-step{
+    display:flex;gap:16px;margin-bottom:8px;
+    cursor:pointer;position:relative;
+  }
+  .tl-left{display:flex;flex-direction:column;align-items:center;flex-shrink:0;}
+  .tl-dot{
+    width:28px;height:28px;border-radius:50%;
+    border:2px solid var(--border);
+    background:var(--card);
+    display:flex;align-items:center;justify-content:center;
+    font-size:10px;transition:all .3s;flex-shrink:0;
+    position:relative;z-index:1;
+  }
+  .tl-line{width:2px;flex:1;background:var(--border);margin:4px 0;min-height:12px;transition:background .3s;}
+  .tl-step:last-child .tl-line{display:none;}
+
+  .tl-content{padding-bottom:16px;flex:1;}
+  .tl-name{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted2);margin-bottom:0;transition:color .3s;padding-top:5px;}
+  .tl-detail{
+    font-size:11px;line-height:1.8;color:var(--muted);
+    max-height:0;overflow:hidden;
+    transition:max-height .4s cubic-bezier(.23,1,.32,1),opacity .3s,margin .3s;
+    opacity:0;margin-top:0;
+  }
+
+  /* Hover / active state */
+  .tl-step:hover .tl-dot,
+  .tl-step.open .tl-dot{border-color:var(--proj-color,var(--pink));background:var(--proj-color,var(--pink));color:#000;}
+  .tl-step:hover .tl-line,
+  .tl-step.open .tl-line{background:var(--proj-color,var(--pink));opacity:.4;}
+  .tl-step:hover .tl-name,
+  .tl-step.open .tl-name{color:var(--text);}
+  .tl-step.open .tl-detail{max-height:200px;opacity:1;margin-top:8px;}
+
+  /* ── RIGHT: info + photos ── */
+  .desktop-right{display:flex;flex-direction:column;gap:20px;position:relative;z-index:1;}
+
+  /* Project info card */
+  .proj-info{
+    background:rgba(255,255,255,.03);
+    border:1px solid rgba(255,255,255,.07);
+    border-radius:16px;
+    padding:24px;
+  }
+  .proj-num{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+  .proj-name{font-family:'Syne',sans-serif;font-weight:800;font-size:24px;letter-spacing:-.03em;margin-bottom:6px;}
+  .proj-tagline{font-size:11px;color:var(--muted2);line-height:1.7;margin-bottom:16px;}
+  .proj-tags{display:flex;flex-wrap:wrap;gap:6px;}
+  .ptag{font-size:8px;letter-spacing:.12em;text-transform:uppercase;padding:4px 10px;border-radius:100px;border:1px solid var(--border);color:var(--muted);}
+  .ptag.accent{border-color:rgba(255,45,130,.3);color:var(--pink);}
+  .ptag.green{border-color:rgba(0,255,140,.3);color:var(--green);}
+
+  /* Photo gallery */
+  .photo-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    flex:1;
+  }
+  .photo-cell{
+    background:rgba(255,255,255,.04);
+    border:1px solid rgba(255,255,255,.06);
+    border-radius:12px;
+    overflow:hidden;
+    aspect-ratio:4/3;
+    display:flex;align-items:center;justify-content:center;
+    font-size:24px;
+    position:relative;
+    cursor:pointer;
+    transition:all .25s;
+  }
+  .photo-cell:hover{border-color:rgba(255,45,130,.3);transform:scale(1.02);}
+  .photo-cell img{width:100%;height:100%;object-fit:cover;display:block;}
+  .photo-cell .ph-label{position:absolute;bottom:8px;left:8px;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5);background:rgba(0,0,0,.5);padding:3px 8px;border-radius:4px;}
+
+  /* Mac dock */
+  .mac-dock{
+    height:56px;background:rgba(255,255,255,.04);border-top:1px solid rgba(255,255,255,.06);
+    display:flex;align-items:center;justify-content:center;gap:12px;padding:0 24px;
+  }
+  .dock-icon{
+    width:36px;height:36px;border-radius:10px;
+    display:flex;align-items:center;justify-content:center;font-size:18px;
+    background:rgba(255,255,255,.06);transition:transform .2s;cursor:default;
+  }
+  .dock-icon:hover{transform:translateY(-6px) scale(1.15);}
+  .dock-icon.active-app{background:rgba(255,45,130,.2);border:1px solid rgba(255,45,130,.3);}
+
+  /* Placeholder shimmer */
+  .ph-shimmer{
+    background:linear-gradient(90deg,rgba(255,255,255,.03) 25%,rgba(255,255,255,.07) 50%,rgba(255,255,255,.03) 75%);
+    background-size:200% 100%;
+    animation:shimmer 2s infinite;
+  }
+
+  /* hamburger hidden on desktop */
+  .hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;padding:4px;cursor:pointer;}
+  .hamburger span{width:22px;height:2px;background:var(--text);border-radius:2px;display:block;}
+
+  @media(max-width:900px){
+    nav{padding:0 20px;}
+    .hamburger{display:flex;}
+    .nav-links{
+      display:none;flex-direction:column;
+      position:fixed;top:60px;left:0;right:0;
+      background:rgba(8,8,16,.97);
+      padding:24px 32px;gap:20px;
+      border-bottom:1px solid var(--border);
+      list-style:none;
+    }
+    .nav-links.open{display:flex;}
+    .proj-selector{padding:20px 24px 0;}
+    .project-stage{padding:24px 24px 0;}
+    .proj-tabs{flex-wrap:wrap;}
+    .mac-desktop{grid-template-columns:1fr;gap:20px;padding:20px;}
+    .desktop-left{flex-direction:column;}
+    .iphone{width:140px;align-self:center;}
+  }
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav>
+  <a href="index.html" class="nav-logo"><div class="nav-dot"></div>AC.</a>
+  <ul class="nav-links">
+    <li><a href="skills.html">Skills</a></li>
+    <li><a href="work.html" class="active">Work</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <button class="hamburger" id="ham" onclick="document.querySelector('.nav-links').classList.toggle('open')">
+  <span></span><span></span><span></span>
+</button>
+</nav>
+
+<div class="page">
+  <div class="proj-selector">
+    <div class="sel-eyebrow">02 — Selected Work</div>
+    <h1 class="sel-title">What I've<br><span class="s">shipped.</span></h1>
+    <div class="proj-tabs">
+      <button class="ptab active" onclick="showProject('wecolor')">We Color</button>
+      <button class="ptab" onclick="showProject('overstood')">Overstood</button>
+      <button class="ptab" onclick="showProject('solstice')">Solstice</button>
+      <button class="ptab" onclick="showProject('pulsepoint')">PulsePoint</button>
+    </div>
+  </div>
+
+  <!-- ══════════════ WE COLOR ══════════════ -->
+  <div class="project-stage active" id="stage-wecolor">
+    <div class="mac-shell">
+      <div class="mac-bar">
+        <div class="mac-btn r"></div><div class="mac-btn y"></div><div class="mac-btn g"></div>
+        <div class="mac-url">wecolor.app — Apple Challenge 03</div>
+      </div>
+      <div class="mac-desktop" style="--proj-color:#ff9f0a;">
+        <div class="desktop-left">
+          <!-- iPhone -->
+          <div class="spotlight" style="--proj-color:#ff9f0a;">
+            <div class="spotlight-glow"></div>
+            <div class="spotlight-screen" style="--proj-screen-bg:linear-gradient(160deg,#1a0a00,#2d1800,#0a0a12);">
+              <div class="spotlight-ico">🎨</div>
+              <div class="spotlight-name">We Color</div>
+              <div class="spotlight-sub">iOS · Xcode</div>
+              <div class="spotlight-badge">Add your screenshot</div>
+            </div>
+          </div>
+          <!-- Timeline -->
+          <div class="timeline" style="--proj-color:#ff9f0a;">
+            <div class="tl-label">DONE Model</div>
+            <div class="tl-step" onclick="toggleStep(this)">
+              <div class="tl-left"><div class="tl-dot">D</div><div class="tl-line"></div></div>
+              <div class="tl-content">
+                <div class="tl-name">Define</div>
+                <div class="tl-detail">Identified client needs around therapeutic development for children. Defined core use case: a safe, expressive digital coloring experience that supports emotional regulation and fine motor development.</div>
+              </div>
+            </div>
+            <div class="tl-step" onclick="toggleStep(this)">
+              <div class="tl-left"><div class="tl-dot">O</div><div class="tl-line"></div></div>
+              <div class="tl-content">
+                <div class="tl-name">Organize</div>
+                <div class="tl-detail">Structured the app around client-inspired themes. Organized color palettes, canvas interactions, and accessibility features. Mapped user flow for children aged 4–10 with therapeutic intent at every touchpoint.</div>
+              </div>
+            </div>
+            <div class="tl-step" onclick="toggleStep(this)">
+              <div class="tl-left"><div class="tl-dot">N</div><div class="tl-line"></div></div>
+              <div class="tl-content">
+                <div class="tl-name">Navigate</div>
+                <div class="tl-detail">Built in Xcode with Swift UI. Navigated challenges around touch sensitivity calibration for young users and ensuring the interface was intuitive without any written instructions required.</div>
+              </div>
+            </div>
+            <div class="tl-step" onclick="toggleStep(this)">
+              <div class="tl-left"><div class="tl-dot">E</div><div class="tl-line"></div></div>
+              <div class="tl-content">
+                <div class="tl-name">Evaluate</div>
+                <div class="tl-detail">Presented to Apple challenge reviewers. Evaluated against therapeutic value, technical implementation, and UX accessibility. Key result: a fully functional iOS coloring app built around a real client brief.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Right -->
+        <div class="desktop-right">
+          <div class="proj-info">
+            <div class="proj-num">01 / 04</div>
+            <div class="proj-name" style="color:#ff9f0a;">We Color</div>
+            <div class="proj-tagline">A children's therapeutic coloring app built for Apple Challenge 03. Designed around a real client to foster emotional expression and development through interactive, accessible play.</div>
+            <div class="proj-tags">
+              <span class="ptag accent">iOS</span>
+              <span class="ptag accent">Xcode</span>
+              <span class="ptag green">Swift UI</span>
+              <span class="ptag">Apple Challenge</span>
+              <span class="ptag">Therapeutic UX</span>
+              <span class="ptag">Children's App</span>
+            </div>
+          </div>
+          <div class="photo-grid">
+            <div class="photo-cell ph-shimmer"><span>📸</span><span class="ph-label">App screen</span></div>
+            <div class="photo-cell ph-shimmer"><span>📸</span><span class="ph-label">Color palette</span></div>
+            <div class="photo-cell ph-shimmer"><span>📸</span><span class="ph-label">Client inspo</span></div>
+            <div class="photo-cell ph-shimmer"><span>📸</span><span class="ph-label">Presentation</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="mac-dock">
+        <div class="dock-icon active-app">🎨</div>
+        <div class="dock-icon">📁</div>
+        <div class="dock-icon">💻</div>
+        <div class="dock-icon">🔧</div>
+        <div class="dock-icon">📝</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ OVERSTOOD ══════════════ -->
+  <div class="project-stage" id="stage-overstood">
+    <div class="mac-shell">
+      <div class="mac-bar">
+        <div class="mac-btn r"></div><div class="mac-btn y"></div><div class="mac-btn g"></div>
+        <div class="mac-url">overstood.app — React / AI</div>
+      </div>
+      <div class="mac-desktop" style="--proj-color:#00ff8c;">
+        <div class="desktop-left">
+          <div class="browser" style="--proj-color:#00ff8c;">
+            <div class="browser-bar">
+              <div class="browser-dot r"></div><div class="browser-dot y"></div><div class="browser-dot g"></div>
+              <div class="browser-url"><span>overstood.app</span></div>
+            </div>
+            <div class="browser-screen" style="--proj-screen-bg:linear-gradient(145deg,#001a0d,#002a15);">
+              <div class="browser-ico">🧠</div>
+              <div class="browser-name">Overstood</div>
+              <div class="browser-sub">Add your screenshot</div>
+            </div>
+          </div>
+          <div class="timeline" style="--proj-color:#00ff8c;">
+            <div class="tl-label">DONE Model</div>
+            <div class="tl-step" onclick="toggleStep(this)">
+              <div class="tl-left"><div class="tl-dot">D</div><div class="tl-line"></div></div>
+              <div class="tl-content">
+                <div class="tl-name">Define</div>
+                <div class="tl-detail">Identified a gap: complex academic and technical content is inaccessible to most learners. Defined the core problem as a translation problem — not a comprehension one. The Feynman technique became the framework.</div>
+              </div>
+            </div>
+            <div class="tl-step" onclick="toggleStep(this)">
+              <div class="tl-left"><div class="tl-dot">O</div><div class="tl-line"></div></div>
+              <div class="tl-content">
+                <div class="tl-name">Organize</div>
+                <div class="tl-detail">Organized the product around a paste-and-translate interaction model. Structured the AI prompt engineering to return metaphor-first explanations. Designed content hierarchy for maximum clarity.</div>
+              </div>
+            </div>
+            <div class="tl-step" onclick="toggleStep(this)">
+              <div class="tl-left"><div class="tl-dot">N</div><div class="tl-line"></div></div>
+              <div class="tl-content">
+                <div class="tl-name">Navigate</div>
+                <div class="tl-detail">Built as a React web app during a build sprint. Rebuilt and refined a prior version to improve AI integration, UX flow, and response formatting. Navigated real-time API constraints and output variability.</div>
+              </div>
+            </div>
+            <div class="tl-step" onclick="toggleStep(this)">
+              <div class="tl-left"><div class="tl-dot">E</div><div class="tl-line"></div></div>
+              <div class="tl-content">
+                <div class="tl-name">Evaluate</div>
+                <div class="tl-detail">Evaluated through sprint demo and peer feedback. Key result: a working tool that takes dense educational content and returns plain-language metaphors — making learning accessible to anyone, regardless of background.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="desktop-right">
+          <div class="proj-info">
+            <div class="proj-num">02 / 04</div>
+            <div class="proj-name" style="color:#00ff8c;">Overstood</div>
+            <div class="proj-tagline">A React web app that uses the Feynman technique and AI to translate complex educational resources into layman's terms through simple, intuitive metaphor.</div>
+            <div class="proj-tags">
+              <span class="ptag green">React</span>
+              <span class="ptag green">AI Integration</span>
+              <span class="ptag accent">Feynman Technique</span>
+              <span class="ptag">Build Sprint</span>
+              <span class="ptag">EdTech</span>
+              <span class="ptag">Accessibility</span>
+            </div>
+          </div>
+          <div class="photo-grid">
+            <div class="photo-cell ph-shimmer"><span>📸</span><span class="ph-label">Homepage</span></div>
+            <div class="photo-cell ph-shimmer"><span>📸</span><span class="ph-label">Translation UI</span></div>
+            <div class="photo-cell ph-shimmer"><span>📸</span><span class="ph-label">Output example</span></div>
+            <div class="photo-cell ph-shimmer"><span>📸</span><span class="ph-label">Sprint demo</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="mac-dock">
+        <div class="dock-icon active-app">🧠</div>
+        <div class="dock-icon">📁</div>
+        <div class="dock-icon">⚛️</div>
+        <div class="dock-icon">🤖</div>
+        <div class="dock-icon">📝</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ SOLSTICE ══════════════ -->
+  <div class="project-stage" id="stage-solstice">
+    <div class="mac-shell">
+      <div class="mac-bar">
+        <div class="mac-btn r"></div><div class="mac-btn y"></div><div class="mac-btn g"></div>
+        <div class="mac-url">solstice.app — Swift Student Challenge</div>
+      </div>
+      <div class="mac-desktop" style="--proj-color:#a78bfa;">
+        <div class="desktop-left">
+          <div class="spotlight" style="--proj-color:#a78bfa;">
+            <div class="spotlight-glow"></div>
+            <div class="spotlight-screen" style="--proj-screen-bg:linear-gradient(160deg,#0d0020,#1a0035,#080814);">
+              <div class="spotlight-ico">🌙</div>
+              <div class="spotlight-name">Solstice</div>
+              <div class="spotlight-sub">Swift · Playgrounds</div>
+              <div class="spotlight-badge">Add your screenshot</div>
+            </div>
+          </div>
+          <div class="timeline" style="--proj-color:#a78bfa;">
+            <div class="tl-label">DONE Model</div>
+            <div class="tl-step" onclick="toggleStep(this)">
+              <div class="tl-left"><div class="tl-dot">D</div><div class="tl-line"></div></div>
+              <div class="tl-content">
+                <div class="tl-name">Define</div>
+                <div class="tl-detail">Defined the core need: neurodivergent users struggle with traditional task managers that ignore nervous system state. The problem isn't productivity — it's regulation. Solstice bridges the two.</div>
+              </div>
+            </div>
+            <div class="tl-step" onclick="toggleStep(this)">
+              <div class="tl-left"><div class="tl-dot">O</div><div class="tl-line"></div></div>
+              <div class="tl-content">
+                <div class="tl-name">Organize</div>
+                <div class="tl-detail">Organized tasks around nervous system states (regulated, dysregulated, shutdown). Built in breathing exercises, grounding techniques, and sensory-aware UI — low stimulation by default, expressive when the user is ready.</div>
+              </div>
+            </div>
+            <div class="tl-step" onclick="toggleStep(this)">
+              <div class="tl-left"><div class="tl-dot">N</div><div class="tl-line"></div></div>
+              <div class="tl-content">
+                <div class="tl-name">Navigate</div>
+                <div class="tl-detail">Built in Swift Playgrounds for the Apple Swift Student Challenge submission. Navigated the constraint of building a full interactive experience within Playgrounds' single-file format using Swift and SwiftUI.</div>
+              </div>
+            </div>
+            <div class="tl-step" onclick="toggleStep(this)">
+              <div class="tl-left"><div class="tl-dot">E</div><div class="tl-line"></div></div>
+              <div class="tl-content">
+                <div class="tl-name">Evaluate</div>
+                <div class="tl-detail">Submitted to Apple Swift Student Challenge. Evaluated on technical execution, creativity, and real-world impact. Key result: a functional neurodivergent-first task manager that treats regulation as a feature, not an afterthought.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="desktop-right">
+          <div class="proj-info">
+            <div class="proj-num">03 / 04</div>
+            <div class="proj-name" style="color:#a78bfa;">Solstice</div>
+            <div class="proj-tagline">A neurodivergent task manager with built-in nervous system regulation techniques. Built in Swift Playgrounds for the Apple Swift Student Challenge — because productivity should start with how you feel.</div>
+            <div class="proj-tags">
+              <span class="ptag" style="border-color:rgba(167,139,250,.3);color:#a78bfa;">Swift</span>
+              <span class="ptag" style="border-color:rgba(167,139,250,.3);color:#a78bfa;">SwiftUI</span>
+              <span class="ptag accent">Swift Student Challenge</span>
+              <span class="ptag">Neurodivergent UX</span>
+              <span class="ptag">iOS Playgrounds</span>
+              <span class="ptag">Wellness Tech</span>
+            </div>
+          </div>
+          <div class="photo-grid">
+            <div class="photo-cell ph-shimmer"><span>📸</span><span class="ph-label">Task view</span></div>
+            <div class="photo-cell ph-shimmer"><span>📸</span><span class="ph-label">Regulation mode</span></div>
+            <div class="photo-cell ph-shimmer"><span>📸</span><span class="ph-label">Breathing UI</span></div>
+            <div class="photo-cell ph-shimmer"><span>📸</span><span class="ph-label">Challenge submission</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="mac-dock">
+        <div class="dock-icon active-app">🌙</div>
+        <div class="dock-icon">📁</div>
+        <div class="dock-icon">🎮</div>
+        <div class="dock-icon">🔧</div>
+        <div class="dock-icon">📝</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ PULSEPOINT ══════════════ -->
+  <div class="project-stage" id="stage-pulsepoint">
+    <div class="mac-shell">
+      <div class="mac-bar">
+        <div class="mac-btn r"></div><div class="mac-btn y"></div><div class="mac-btn g"></div>
+        <div class="mac-url">pulsepoint.io — SaaS Product</div>
+      </div>
+      <div class="mac-desktop" style="--proj-color:#ff2d82;">
+        <div class="desktop-left">
+          <div class="spotlight" style="--proj-color:#ff2d82;">
+            <div class="spotlight-glow"></div>
+            <div class="spotlight-screen" style="--proj-screen-bg:linear-gradient(160deg,#1a0010,#2a0020,#0a0812);">
+              <div class="spotlight-ico">📊</div>
+              <div class="spotlight-name">PulsePoint</div>
+              <div class="spotlight-sub">SaaS · Dashboard</div>
+              <div class="spotlight-badge">Add your screenshot</div>
+            </div>
+          </div>
+          <div class="timeline" style="--proj-color:#ff2d82;">
+            <div class="tl-label">DONE Model</div>
+            <div class="tl-step" onclick="toggleStep(this)">
+              <div class="tl-left"><div class="tl-dot">D</div><div class="tl-line"></div></div>
+              <div class="tl-content">
+                <div class="tl-name">Define</div>
+                <div class="tl-detail">Identified a gap in community analytics: organizations collect survey data but lack the tools to turn qualitative responses into actionable metrics. Defined PulsePoint as the bridge between community voice and quantifiable quality analysis.</div>
+              </div>
+            </div>
+            <div class="tl-step" onclick="toggleStep(this)">
+              <div class="tl-left"><div class="tl-dot">O</div><div class="tl-line"></div></div>
+              <div class="tl-content">
+                <div class="tl-name">Organize</div>
+                <div class="tl-detail">Organized the product around a survey-in, metrics-out pipeline. Structured data models, visualization components, and reporting dashboards. Authored the full PRD and scoped the MVP feature set.</div>
+              </div>
+            </div>
+            <div class="tl-step" onclick="toggleStep(this)">
+              <div class="tl-left"><div class="tl-dot">N</div><div class="tl-line"></div></div>
+              <div class="tl-content">
+                <div class="tl-name">Navigate</div>
+                <div class="tl-detail">Navigated the full SaaS build: frontend, backend, data pipeline, and dashboard UI. Made key decisions around data normalization, metric weighting, and user-configurable reporting to serve diverse community organizations.</div>
+              </div>
+            </div>
+            <div class="tl-step" onclick="toggleStep(this)">
+              <div class="tl-left"><div class="tl-dot">E</div><div class="tl-line"></div></div>
+              <div class="tl-content">
+                <div class="tl-name">Evaluate</div>
+                <div class="tl-detail">Ongoing. Currently in active development with real community partners. Key metrics tracked: survey completion rate, metric accuracy vs manual analysis, and time-to-insight reduction for community managers.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="desktop-right">
+          <div class="proj-info">
+            <div class="proj-num">04 / 04</div>
+            <div class="proj-name" style="color:#ff2d82;">PulsePoint</div>
+            <div class="proj-tagline">A SaaS product that converts community survey data into quantifiable metrics for quality analysis — turning community voice into actionable intelligence for organizations that serve people.</div>
+            <div class="proj-tags">
+              <span class="ptag accent">SaaS</span>
+              <span class="ptag accent">Community Analytics</span>
+              <span class="ptag green">Data Pipeline</span>
+              <span class="ptag">Dashboard UI</span>
+              <span class="ptag">PRD Authored</span>
+              <span class="ptag">MVP → Launch</span>
+            </div>
+          </div>
+          <div class="photo-grid">
+            <div class="photo-cell ph-shimmer"><span>📸</span><span class="ph-label">Dashboard</span></div>
+            <div class="photo-cell ph-shimmer"><span>📸</span><span class="ph-label">Survey flow</span></div>
+            <div class="photo-cell ph-shimmer"><span>📸</span><span class="ph-label">Metrics view</span></div>
+            <div class="photo-cell ph-shimmer"><span>📸</span><span class="ph-label">Reports</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="mac-dock">
+        <div class="dock-icon active-app">📊</div>
+        <div class="dock-icon">📁</div>
+        <div class="dock-icon">💾</div>
+        <div class="dock-icon">📈</div>
+        <div class="dock-icon">📝</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end page -->
+
+<script>
+  // Cursor
+  const cursor=document.getElementById("cursor"),ring=document.getElementById("cursorRing");
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener("mousemove",e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx-5+"px";cursor.style.top=my-5+"px";});
+  (function a(){rx+=(mx-rx-16)*.1;ry+=(my-ry-16)*.1;ring.style.left=rx+"px";ring.style.top=ry+"px";requestAnimationFrame(a);})();
+
+  // Project switcher
+  function showProject(id) {
+    document.querySelectorAll('.project-stage').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.ptab').forEach(t => t.classList.remove('active'));
+    document.getElementById('stage-'+id).classList.add('active');
+    event.target.classList.add('active');
+  }
+
+  // Timeline accordion
+  function toggleStep(el) {
+    const isOpen = el.classList.contains('open');
+    // Close all in same timeline
+    el.closest('.timeline').querySelectorAll('.tl-step').forEach(s => s.classList.remove('open'));
+    if (!isOpen) el.classList.add('open');
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skills — Ashley Crockett</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#080810; --card:#13131e; --border:rgba(255,255,255,0.07); --green:#00ff8c; --pink:#ff2d82; --text:#f0f0f8; --muted:#5a5a72; --muted2:#888899; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'DM Mono',monospace; min-height:100vh; cursor:none; overflow-x:hidden; }
+  .cursor { position:fixed; width:10px; height:10px; background:var(--pink); border-radius:50%; pointer-events:none; z-index:9999; transition:transform .15s; }
+  .cursor-ring { position:fixed; width:32px; height:32px; border:1.5px solid var(--green); border-radius:50%; pointer-events:none; z-index:9998; opacity:.5; }
+  .cursor.grabbing { transform:scale(1.4); background:var(--green); }
+  .grid-bg { position:fixed; inset:0; pointer-events:none; z-index:0; background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px); background-size:60px 60px; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.85)} }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:none} }
+  nav { position:fixed; top:0; left:0; right:0; z-index:500; height:60px; padding:0 48px; display:flex; align-items:center; justify-content:space-between; backdrop-filter:blur(24px); background:rgba(8,8,16,.85); border-bottom:1px solid var(--border); }
+  .nav-logo { font-family:'Syne',sans-serif; font-weight:800; font-size:15px; letter-spacing:-.02em; display:flex; align-items:center; gap:8px; text-decoration:none; color:var(--text); }
+  .nav-dot { width:8px; height:8px; border-radius:50%; background:var(--pink); animation:pulse 2s infinite; }
+  .nav-links { display:flex; gap:32px; list-style:none; font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
+  .nav-links a { color:inherit; text-decoration:none; transition:color .2s; }
+  .nav-links a:hover { color:var(--green); }
+  .nav-links a.active { color:var(--green); }
+  ::-webkit-scrollbar { width:3px; } ::-webkit-scrollbar-track { background:var(--bg); } ::-webkit-scrollbar-thumb { background:var(--pink); border-radius:2px; }
+  .page { padding:100px 48px 60px; position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; min-height:100vh; }
+  .page-header { text-align:center; margin-bottom:16px; animation:fadeUp .5s ease both; }
+  .page-eyebrow { font-size:10px; letter-spacing:.22em; text-transform:uppercase; color:var(--green); margin-bottom:14px; }
+  .page-title { font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(40px,6vw,72px); letter-spacing:-.05em; line-height:.9; }
+  .page-title .s { font-family:'Instrument Serif',serif; font-style:italic; font-weight:400; color:var(--green); }
+  .page-sub { font-size:12px; color:var(--muted2); margin-top:14px; letter-spacing:.04em; }
+  .swipe-hint { display:flex; align-items:center; gap:12px; margin-bottom:28px; animation:fadeUp .5s ease both .1s; flex-wrap:wrap; justify-content:center; }
+  .hint-pill { display:flex; align-items:center; gap:7px; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); background:var(--card); border:1px solid var(--border); border-radius:100px; padding:6px 14px; }
+  .card-counter { font-size:11px; color:var(--muted2); letter-spacing:.1em; margin-bottom:20px; animation:fadeUp .5s ease both .15s; }
+  .card-counter span { color:var(--green); font-family:'Syne',sans-serif; font-weight:700; }
+
+  /* iPAD */
+  .ipad-wrap { position:relative; animation:fadeUp .6s ease both .2s; }
+  .ipad { width:520px; background:#0a0a12; border-radius:36px; border:2px solid rgba(255,255,255,.12); box-shadow:0 0 0 1px rgba(255,255,255,.04),0 40px 100px rgba(0,0,0,.8),0 0 60px rgba(255,45,130,.06),inset 0 1px 0 rgba(255,255,255,.08); padding:28px 22px 22px; position:relative; }
+  .ipad-topbar { display:flex; align-items:center; justify-content:space-between; padding:0 8px 18px; }
+  .ipad-camera { width:8px; height:8px; border-radius:50%; background:#1a1a24; border:1px solid rgba(255,255,255,.1); margin:0 auto; }
+  .ipad-time { font-size:11px; color:var(--muted2); letter-spacing:.06em; }
+  .ipad-icons { display:flex; gap:6px; align-items:center; font-size:10px; color:var(--muted); }
+  .ipad-screen { background:#12121f; border-radius:20px; overflow:hidden; position:relative; height:500px; border:1px solid rgba(255,255,255,.06); }
+  .ipad-screen::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at 50% 0%,rgba(255,45,130,.12) 0%,transparent 60%); pointer-events:none; z-index:0; }
+  .deck-stage { position:absolute; inset:0; top:0; display:flex; align-items:center; justify-content:center; perspective:1000px; }
+
+  /* CARDS */
+  .skill-card { position:absolute; width:340px; background:#1c1c2e; border-radius:24px; border:1px solid var(--border); padding:32px 28px 28px; box-shadow:0 20px 60px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.06); cursor:grab; user-select:none; will-change:transform; touch-action:none; }
+  .skill-card:active { cursor:grabbing; }
+  .skill-card.is-top { z-index:10; }
+  .skill-card.is-second { z-index:9; }
+  .skill-card.is-third { z-index:8; }
+  .skill-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; border-radius:24px 24px 0 0; }
+  .skill-card.pm::before { background:var(--green); }
+  .skill-card.dev::before { background:var(--pink); }
+  .skill-card.com::before { background:linear-gradient(90deg,var(--pink),var(--green)); }
+  .skill-card.cert::before { background:linear-gradient(90deg,#a78bfa,var(--pink)); }
+  .skill-card.hack::before { background:linear-gradient(90deg,var(--green),#00d4ff); }
+  .like-stamp { position:absolute; top:24px; left:24px; border:3px solid var(--green); border-radius:8px; color:var(--green); font-family:'Syne',sans-serif; font-weight:800; font-size:22px; letter-spacing:.12em; padding:4px 12px; opacity:0; transform:rotate(-12deg); pointer-events:none; text-transform:uppercase; }
+  .nope-stamp { position:absolute; top:24px; right:24px; border:3px solid var(--pink); border-radius:8px; color:var(--pink); font-family:'Syne',sans-serif; font-weight:800; font-size:22px; letter-spacing:.12em; padding:4px 12px; opacity:0; transform:rotate(12deg); pointer-events:none; text-transform:uppercase; }
+  .card-category { font-size:9px; letter-spacing:.18em; text-transform:uppercase; color:var(--muted2); margin-bottom:12px; }
+  .card-ico { font-size:40px; margin-bottom:16px; display:block; line-height:1; }
+  .card-title { font-family:'Syne',sans-serif; font-weight:800; font-size:22px; letter-spacing:-.03em; margin-bottom:10px; }
+  .card-title.green { color:var(--green); }
+  .card-title.pink { color:var(--pink); }
+  .card-title.purple { color:#a78bfa; }
+  .card-title.cyan { color:#00d4ff; }
+  .card-desc { font-size:11px; line-height:1.85; color:var(--muted2); margin-bottom:20px; }
+  .card-tags { display:flex; flex-wrap:wrap; gap:6px; }
+  .ctag { font-size:9px; letter-spacing:.1em; text-transform:uppercase; padding:5px 11px; border-radius:100px; border:1px solid var(--border); color:var(--muted); background:rgba(255,255,255,.03); }
+  .ctag.green { border-color:rgba(0,255,140,.25); color:var(--green); }
+  .ctag.pink { border-color:rgba(255,45,130,.25); color:var(--pink); }
+  .ctag.purple { border-color:rgba(167,139,250,.25); color:#a78bfa; }
+  .ctag.cyan { border-color:rgba(0,212,255,.25); color:#00d4ff; }
+  .card-num { position:absolute; bottom:20px; right:24px; font-size:10px; color:var(--muted); letter-spacing:.1em; }
+  .ipad-homebar { width:100px; height:4px; background:rgba(255,255,255,.15); border-radius:2px; margin:14px auto 0; }
+
+  /* DONE */
+  .deck-done { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; text-align:center; padding:32px; opacity:0; pointer-events:none; transition:opacity .4s; z-index:20; }
+  .deck-done.show { opacity:1; pointer-events:auto; }
+  .deck-done-ico { font-size:48px; }
+  .deck-done-title { font-family:'Syne',sans-serif; font-weight:800; font-size:20px; }
+  .deck-done-sub { font-size:11px; color:var(--muted2); line-height:1.7; }
+  .deck-restart { margin-top:8px; font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--green); cursor:pointer; border-bottom:1px solid rgba(0,255,140,.3); padding-bottom:2px; }
+
+  /* ACTIONS */
+  .deck-actions { display:flex; gap:16px; align-items:center; justify-content:center; margin-top:24px; animation:fadeUp .6s ease both .3s; }
+  .action-btn { width:58px; height:58px; border-radius:50%; border:1px solid var(--border); background:var(--card); display:flex; align-items:center; justify-content:center; font-size:22px; cursor:pointer; transition:all .2s; box-shadow:0 8px 24px rgba(0,0,0,.4); }
+  .action-btn:hover { transform:scale(1.1); }
+  .action-btn.skip:hover { border-color:rgba(255,45,130,.5); box-shadow:0 8px 32px rgba(255,45,130,.25); }
+  .action-btn.like { border-color:rgba(0,255,140,.3); color:var(--green); }
+  .action-btn.like:hover { border-color:rgba(0,255,140,.6); box-shadow:0 8px 32px rgba(0,255,140,.25); }
+  .action-btn.back { border-color:rgba(255,45,130,.3); color:var(--pink); }
+  .action-btn.back:hover { border-color:rgba(255,45,130,.6); box-shadow:0 8px 32px rgba(255,45,130,.2); }
+  .action-label { font-size:9px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); text-align:center; margin-top:6px; }
+  .action-col { display:flex; flex-direction:column; align-items:center; }
+
+  /* DOTS */
+  .progress-dots { display:flex; gap:6px; justify-content:center; margin-top:20px; animation:fadeUp .6s ease both .35s; }
+  .pdot { width:6px; height:6px; border-radius:50%; background:var(--border); transition:all .3s; }
+  .pdot.active { background:var(--green); width:18px; border-radius:3px; }
+  .pdot.seen { background:var(--muted); }
+
+  .hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;padding:4px;cursor:pointer;}
+  .hamburger span{width:22px;height:2px;background:var(--text);border-radius:2px;display:block;}
+
+@media(max-width:900px) {
+    nav { padding:0 20px; }
+    .hamburger{display:flex;}
+    .nav-links{display:none;flex-direction:column;position:fixed;top:60px;left:0;right:0;background:rgba(8,8,16,.97);padding:24px 32px;gap:20px;border-bottom:1px solid var(--border);list-style:none;}
+    .nav-links.open{display:flex;}
+    .page { padding:90px 16px 60px; }
+    .ipad { width:calc(100vw - 32px); border-radius:24px; padding:20px 14px 14px; }
+    .ipad-screen { height:420px; }
+    .skill-card { width:calc(100% - 32px); }
+  }
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav>
+  <a href="index.html" class="nav-logo"><div class="nav-dot"></div>AC.</a>
+  <ul class="nav-links">
+    <li><a href="skills.html" class="active">Skills</a></li>
+    <li><a href="work.html">Work</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <button class="hamburger" onclick="document.querySelector('.nav-links').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="page">
+  <div class="page-header">
+    <div class="page-eyebrow">01 — Skills</div>
+    <h1 class="page-title">What I<br><span class="s">do best.</span></h1>
+    <p class="page-sub">Swipe through my skill set</p>
+  </div>
+
+  <div class="swipe-hint">
+    <div class="hint-pill">👆 drag to swipe</div>
+    <div class="hint-pill">📱 swipe on mobile</div>
+  </div>
+
+  <div class="card-counter">Card <span id="currentNum">1</span> of <span id="totalNum">8</span></div>
+
+  <div class="ipad-wrap">
+    <div class="ipad">
+      <div class="ipad-topbar">
+        <div class="ipad-time">9:41</div>
+        <div class="ipad-camera"></div>
+        <div class="ipad-icons">⚡ 🛜</div>
+      </div>
+      <div class="ipad-screen">
+
+        <div class="deck-stage" id="deckStage"></div>
+        <div class="deck-done" id="deckDone">
+          <div class="deck-done-ico">✦</div>
+          <div class="deck-done-title">That's the full picture.</div>
+          <div class="deck-done-sub">PM · Developer · Community Builder<br>Three lanes. One person.</div>
+          <div class="deck-restart" id="restartBtn">Start over →</div>
+        </div>
+      </div>
+      <div class="ipad-homebar"></div>
+    </div>
+  </div>
+
+  <div class="deck-actions">
+    <div class="action-col">
+      <div class="action-btn back" id="backBtn">←</div>
+      <div class="action-label">Back</div>
+    </div>
+    <div class="action-col">
+      <div class="action-btn like" id="likeBtn">→</div>
+      <div class="action-label">Next</div>
+    </div>
+  </div>
+
+  <div class="progress-dots" id="progressDots"></div>
+</div>
+
+<script>
+const cursor = document.getElementById("cursor");
+const ring   = document.getElementById("cursorRing");
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener("mousemove", e => { mx=e.clientX; my=e.clientY; cursor.style.left=mx-5+"px"; cursor.style.top=my-5+"px"; });
+(function a(){ rx+=(mx-rx-16)*.1; ry+=(my-ry-16)*.1; ring.style.left=rx+"px"; ring.style.top=ry+"px"; requestAnimationFrame(a); })();
+
+const cards = [
+  { cat:"Product Management", cls:"pm", ico:"◈", title:"PM Certified", titleCls:"green",
+    desc:"Google Project Management certified with a Lean Six Sigma Green Belt. I've authored full PRDs, scoped MVPs, and created master documents for freelance clients — turning vision into structured, actionable plans.",
+    tags:[{t:"Google PM Cert",c:"green"},{t:"Lean Six Sigma",c:"green"},{t:"PRD Authoring",c:""},{t:"MVP Scoping",c:""},{t:"Roadmapping",c:""}] },
+  { cat:"Product Management", cls:"pm", ico:"🏆", title:"Academy PM Lead", titleCls:"green",
+    desc:"Performed as Project Manager in nearly every challenge throughout the academy program — leading cross-functional teams, driving timelines, and delivering under pressure. Not just a participant. The lead.",
+    tags:[{t:"Team Leadership",c:"green"},{t:"Sprint Planning",c:""},{t:"Agile",c:""},{t:"Deliverables",c:""},{t:"Academy",c:"green"}] },
+  { cat:"Development", cls:"dev", ico:"⌨", title:"Builder", titleCls:"pink",
+    desc:"Built 2 apps including PulsePoint (a SaaS product), 2 websites, and this portfolio — all from scratch. I don't just understand code; I ship with it. Micro is my design tool of choice.",
+    tags:[{t:"PulsePoint SaaS",c:"pink"},{t:"HTML/CSS/JS",c:"pink"},{t:"2 Web Apps",c:""},{t:"Micro",c:""},{t:"Portfolio Design",c:""}] },
+  { cat:"Development", cls:"dev", ico:"🥇", title:"Hackathon Finalist", titleCls:"pink",
+    desc:"Top 6 finalist out of 90+ participants at TechTown's Mobility Week Hackathon. Also competed at Venture313. I build fast, think on my feet, and deliver under real pressure with real stakes.",
+    tags:[{t:"Top 6 / 90+",c:"pink"},{t:"TechTown",c:"pink"},{t:"Venture313",c:""},{t:"Buildathon",c:""},{t:"Rapid Prototyping",c:""}] },
+  { cat:"Community & Advocacy", cls:"com", ico:"◎", title:"Community Manager", titleCls:"",
+    desc:"Community Engagement Manager at DevsCreate313. I build the rooms, run the programs, and create the connections that turn a group of people into a community. Partnered with DevOps Detroit and Live, Play, Innovate.",
+    tags:[{t:"DevsCreate313",c:""},{t:"DevOps Detroit",c:""},{t:"Live Play Innovate",c:""},{t:"Event Hosting",c:""},{t:"Dev Relations",c:""}] },
+  { cat:"Community & Advocacy", cls:"com", ico:"♿", title:"Accessibility Advocate", titleCls:"",
+    desc:"Hosted my own event dedicated to cognitive accessibility in the tech world. I believe technology should work for everyone — and I put the work in to make that conversation happen.",
+    tags:[{t:"Cognitive Accessibility",c:""},{t:"Event Production",c:""},{t:"Tech Inclusion",c:""},{t:"Public Speaking",c:""}] },
+  { cat:"Digital Presence", cls:"cert", ico:"📱", title:"100k+ Reach", titleCls:"purple",
+    desc:"Grown an audience of 100k+ followers across Instagram and Threads — not through luck, but through consistent content, a clear point of view, and genuine community engagement.",
+    tags:[{t:"98k Instagram",c:"purple"},{t:"10k Threads",c:"purple"},{t:"Content Strategy",c:""},{t:"Brand Building",c:""},{t:"Audience Growth",c:""}] },
+  { cat:"Education & Coaching", cls:"hack", ico:"🎓", title:"Bootcamp Founder", titleCls:"cyan",
+    desc:"Founded and ran an online bootcamp on boundaries. Currently building out the infrastructure for my second cohort focused on the power of presence. I don't just learn frameworks — I teach them.",
+    tags:[{t:"Bootcamp Founder",c:"cyan"},{t:"Curriculum Design",c:"cyan"},{t:"Online Education",c:""},{t:"Coaching",c:""},{t:"Program Building",c:""}] }
+];
+
+let current = 0;
+let dismissed = [];
+const stage = document.getElementById("deckStage");
+const done  = document.getElementById("deckDone");
+const dots  = document.getElementById("progressDots");
+document.getElementById("totalNum").textContent = cards.length;
+
+function buildDots() {
+  dots.innerHTML = "";
+  cards.forEach((_,i) => { const d=document.createElement("div"); d.className="pdot"+(i===0?" active":""); dots.appendChild(d); });
+}
+function updateDots() {
+  document.querySelectorAll(".pdot").forEach((d,i) => { d.className="pdot"+(i===current?" active":i<current?" seen":""); });
+}
+function updateCounter() {
+  const n = Math.min(current+1, cards.length);
+  document.getElementById("currentNum").textContent = n;
+  const sc=document.getElementById("screenCounter"); if(sc) sc.textContent = n+" / "+cards.length;
+}
+
+function createCard(index) {
+  const c = cards[index];
+  const el = document.createElement("div");
+  el.className = "skill-card "+c.cls;
+  el.dataset.index = index;
+  el.innerHTML = `
+    <div class="like-stamp">✓ Got it</div>
+    <div class="nope-stamp">← Back</div>
+    <div class="card-category">${c.cat}</div>
+    <span class="card-ico">${c.ico}</span>
+    <div class="card-title ${c.titleCls}">${c.title}</div>
+    <div class="card-desc">${c.desc}</div>
+    <div class="card-tags">${c.tags.map(t=>`<span class="ctag ${t.c}">${t.t}</span>`).join("")}</div>
+    <div class="card-num">${String(index+1).padStart(2,"0")} / ${String(cards.length).padStart(2,"0")}</div>
+  `;
+  return el;
+}
+
+function renderDeck() {
+  stage.innerHTML = "";
+  if (current >= cards.length) { done.classList.add("show"); return; }
+  done.classList.remove("show");
+  for (let i = Math.min(current+2, cards.length-1); i >= current; i--) {
+    const card = createCard(i);
+    const offset = i - current;
+    card.style.transform = `translateY(${offset*10}px) scale(${1-offset*0.04}) rotate(${offset%2===0?offset*1.5:-offset*1.5}deg)`;
+    card.style.opacity = offset===0?"1":offset===1?"0.7":"0.4";
+    if (offset===0) { card.classList.add("is-top"); attachDrag(card); }
+    else if (offset===1) card.classList.add("is-second");
+    else card.classList.add("is-third");
+    stage.appendChild(card);
+  }
+  updateDots(); updateCounter();
+}
+
+function dismissCard(dir) {
+  if (current >= cards.length) return;
+  const top = stage.querySelector(".is-top");
+  if (!top) return;
+  const x = dir==="right"?600:-600;
+  const rot = dir==="right"?30:-30;
+  top.style.transition = "transform .45s cubic-bezier(.23,1,.32,1), opacity .35s ease";
+  top.style.transform = `translateX(${x}px) rotate(${rot}deg)`;
+  top.style.opacity = "0";
+  top.style.pointerEvents = "none";
+  dismissed.push(dir);
+  current++;
+  setTimeout(renderDeck, 380);
+}
+
+function goBack() {
+  if (current===0) return;
+  current--; dismissed.pop(); renderDeck();
+}
+
+function attachDrag(card) {
+  let startX=0, startY=0, currentX=0, isDragging=false;
+  const onStart = e => {
+    isDragging=true;
+    startX = e.type==="touchstart"?e.touches[0].clientX:e.clientX;
+    startY = e.type==="touchstart"?e.touches[0].clientY:e.clientY;
+    card.style.transition="none";
+    cursor.classList.add("grabbing");
+  };
+  const onMove = e => {
+    if (!isDragging) return;
+    const x=(e.type==="touchmove"?e.touches[0].clientX:e.clientX)-startX;
+    const y=(e.type==="touchmove"?e.touches[0].clientY:e.clientY)-startY;
+    currentX=x;
+    card.style.transform=`translateX(${x}px) translateY(${y*.2}px) rotate(${x*.08}deg)`;
+    const like=card.querySelector(".like-stamp"), nope=card.querySelector(".nope-stamp");
+    const ratio=Math.min(Math.abs(x)/80,1);
+    if(x>20){like.style.opacity=ratio;nope.style.opacity=0;}
+    else if(x<-20){nope.style.opacity=ratio;like.style.opacity=0;}
+    else{like.style.opacity=0;nope.style.opacity=0;}
+  };
+  const onEnd = () => {
+    if (!isDragging) return;
+    isDragging=false; cursor.classList.remove("grabbing");
+    card.querySelector(".like-stamp").style.opacity=0;
+    card.querySelector(".nope-stamp").style.opacity=0;
+    if(currentX>80) dismissCard("right");
+    else if(currentX<-80) dismissCard("left");
+    else { card.style.transition="transform .4s cubic-bezier(.23,1,.32,1)"; card.style.transform="translateX(0) rotate(0deg)"; }
+    currentX=0;
+  };
+  card.addEventListener("mousedown",onStart);
+  card.addEventListener("touchstart",onStart,{passive:true});
+  document.addEventListener("mousemove",onMove);
+  document.addEventListener("touchmove",onMove,{passive:true});
+  document.addEventListener("mouseup",onEnd);
+  document.addEventListener("touchend",onEnd);
+}
+
+document.getElementById("likeBtn").addEventListener("click",()=>dismissCard("right"));
+document.getElementById("backBtn").addEventListener("click",goBack);
+document.getElementById("restartBtn").addEventListener("click",()=>{ current=0; dismissed=[]; buildDots(); renderDeck(); });
+document.addEventListener("keydown",e=>{
+  if(e.key==="ArrowRight"||e.key==="ArrowUp") dismissCard("right");
+  if(e.key==="ArrowLeft"||e.key==="ArrowDown") dismissCard("left");
+  if(e.key==="Backspace"||e.key==="z") goBack();
+});
+
+buildDots(); renderDeck();
+</script>
+</body>
+</html>

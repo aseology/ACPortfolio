@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Ashley Crockett — Product Manager Resume</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pink: #d4175a;
+    --green: #0a8a50;
+    --dark: #0e0e18;
+    --muted: #666680;
+    --border: #e0e0ea;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'DM Mono', monospace;
+    background: #fff;
+    color: var(--dark);
+    font-size: 9pt;
+    line-height: 1.5;
+  }
+
+  @media print {
+    body { background: #fff; }
+    .page { box-shadow: none; margin: 0; border-radius: 0; }
+    .print-hint { display: none; }
+    @page { margin: 0; size: Letter; }
+  }
+
+  @media screen {
+    body { background: #e8e8f0; padding: 32px 16px; }
+    .page { max-width: 816px; margin: 0 auto; box-shadow: 0 8px 40px rgba(0,0,0,.18); border-radius: 4px; }
+    .print-hint { text-align:center; font-family:'DM Mono',monospace; font-size:11px; color:#888; margin-bottom:16px; letter-spacing:.08em; }
+  }
+
+  .page { background: #fff; overflow: hidden; }
+
+  /* HEADER */
+  .header {
+    background: var(--dark);
+    padding: 36px 48px 32px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 24px;
+    align-items: end;
+  }
+  .name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 36pt;
+    letter-spacing: -.04em;
+    line-height: .9;
+    color: #fff;
+  }
+  .name span { color: var(--pink); }
+  .title-line {
+    font-size: 8.5pt;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: #00cc70;
+    margin-top: 10px;
+  }
+  .header-contact {
+    text-align: right;
+    font-size: 8pt;
+    color: rgba(255,255,255,.55);
+    letter-spacing: .04em;
+    line-height: 2;
+  }
+  .header-contact strong { color: rgba(255,255,255,.9); font-weight: 400; }
+
+  /* SUMMARY BAR */
+  .summary-bar {
+    background: var(--pink);
+    padding: 14px 48px;
+    font-size: 8.5pt;
+    color: #fff;
+    line-height: 1.7;
+    letter-spacing: .02em;
+  }
+
+  /* BODY */
+  .body { display: grid; grid-template-columns: 1fr 220px; }
+  .main { padding: 28px 32px 32px 48px; border-right: 1px solid var(--border); }
+  .sidebar { padding: 28px 24px 32px; background: #fafafa; }
+
+  /* SECTION LABELS */
+  .sec-label {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 7pt;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--pink);
+    border-bottom: 1.5px solid var(--pink);
+    padding-bottom: 4px;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .sec-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .sec-label.green { color: var(--green); border-color: var(--green); }
+
+  /* JOB ENTRIES */
+  .job { margin-bottom: 20px; }
+  .job:last-child { margin-bottom: 0; }
+  .job-header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+    align-items: baseline;
+    margin-bottom: 2px;
+  }
+  .job-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 10pt;
+    color: var(--dark);
+    letter-spacing: -.02em;
+  }
+  .job-date { font-size: 7.5pt; color: var(--muted); letter-spacing: .06em; white-space: nowrap; }
+  .job-company { font-size: 8pt; color: var(--pink); letter-spacing: .06em; margin-bottom: 6px; text-transform: uppercase; }
+  .job-company.green { color: var(--green); }
+  .job-bullets { list-style: none; }
+  .job-bullets li {
+    font-size: 8.5pt;
+    color: #333;
+    line-height: 1.65;
+    padding-left: 14px;
+    position: relative;
+    margin-bottom: 3px;
+  }
+  .job-bullets li::before { content: '—'; position: absolute; left: 0; color: var(--muted); font-size: 8pt; }
+  .job-bullets li strong { color: var(--dark); font-weight: 400; }
+
+  .divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+  /* SIDEBAR */
+  .s-section { margin-bottom: 22px; }
+  .s-section:last-child { margin-bottom: 0; }
+  .s-item { margin-bottom: 10px; }
+  .s-item-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 9pt; color: var(--dark); letter-spacing: -.01em; }
+  .s-item-sub { font-size: 7.5pt; color: var(--muted); margin-top: 1px; line-height: 1.5; }
+  .s-item-date { font-size: 7pt; color: var(--muted); letter-spacing: .06em; }
+
+  .tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+  .tag { font-size: 7pt; letter-spacing: .08em; text-transform: uppercase; padding: 3px 8px; border-radius: 100px; border: 1px solid var(--border); color: var(--muted); background: #fff; }
+  .tag.p { border-color: rgba(212,23,90,.3); color: var(--pink); }
+  .tag.g { border-color: rgba(10,138,80,.3); color: var(--green); }
+
+  .achievement { background: linear-gradient(135deg,var(--dark),#1a1a2e); border-radius: 8px; padding: 10px 14px; margin-bottom: 8px; }
+  .ach-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 8.5pt; color: #00cc70; }
+  .ach-sub { font-size: 7.5pt; color: rgba(255,255,255,.55); margin-top: 2px; }
+  .ach-date { font-size: 7pt; color: rgba(255,255,255,.35); margin-top: 3px; letter-spacing: .06em; }
+
+  .notary { font-size: 7.5pt; color: var(--muted); padding: 6px 10px; border: 1px solid var(--border); border-radius: 4px; letter-spacing: .04em; }
+</style>
+</head>
+<body>
+
+<p class="print-hint">💾 To save as PDF: File → Print → Change destination to "Save as PDF" → Set margins to None → Save</p>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-left">
+      <div class="name">Ashley<br><span>Crockett</span></div>
+      <div class="title-line">Product Manager · Builder · Community Architect</div>
+    </div>
+    <div class="header-contact">
+      <strong>734-744-3203</strong><br>
+      ashleybreannacrockett@gmail.com<br>
+      linkedin.com/in/ashley-crockett-04a949223<br>
+      github.com/aseology<br>
+      <strong>Detroit, MI</strong>
+    </div>
+  </div>
+
+  <!-- SUMMARY BAR -->
+  <div class="summary-bar">
+    Product Manager & Operations Lead with 10+ years in healthcare administration, now building at the intersection of product, community, and code. Google PM Certified · Lean Six Sigma Green Belt · Apple Developer Academy · Top 6 of 90+ at TechTown Hackathon.
+  </div>
+
+  <!-- BODY -->
+  <div class="body">
+
+    <!-- MAIN COLUMN -->
+    <div class="main">
+
+      <div class="sec-label">01 — Experience</div>
+
+      <div class="job">
+        <div class="job-header">
+          <div class="job-title">Student · iOS Program & PM Lead</div>
+          <div class="job-date">Aug 2025 – Present</div>
+        </div>
+        <div class="job-company green">Apple Developer Academy</div>
+        <ul class="job-bullets">
+          <li>Served as <strong>Project Manager</strong> on nearly every team challenge — leading sprints, aligning cross-functional teams, and driving on-time delivery.</li>
+          <li>Built and shipped <strong>We Color</strong>, a therapeutic iOS coloring app for children (Apple Challenge 03) using Swift, SwiftUI, and Xcode.</li>
+          <li>Submitted <strong>Solstice</strong> to the Apple Swift Student Challenge — a neurodivergent-first task manager with nervous system regulation built in.</li>
+          <li>Earned first Apple certification within 4 weeks of enrollment.</li>
+        </ul>
+      </div>
+
+      <div class="job">
+        <div class="job-header">
+          <div class="job-title">Community Engagement Manager</div>
+          <div class="job-date">2024 – Present</div>
+        </div>
+        <div class="job-company">DevsCreate313</div>
+        <ul class="job-bullets">
+          <li>Manage community programming, partnerships, and events for a Detroit-based developer community organization.</li>
+          <li>Hosted original event on <strong>cognitive accessibility in tech</strong> — produced content, facilitated panel, and drove community turnout.</li>
+          <li>Partner with DevOps Detroit and Live, Play, Innovate to expand reach and programming.</li>
+        </ul>
+      </div>
+
+      <div class="job">
+        <div class="job-header">
+          <div class="job-title">Logistics Manager & Office Supervisor</div>
+          <div class="job-date">Aug 2023 – Aug 2025</div>
+        </div>
+        <div class="job-company">Sherwood Professional Building</div>
+        <ul class="job-bullets">
+          <li>Managed operations across <strong>3 sites</strong> for Dr. Deon Middlebrook's nephrology practice — staff scheduling, workflow coordination, and multi-site logistics.</li>
+          <li>Consulted on additional practice locations and event space, advising on workflow optimization and resource allocation.</li>
+        </ul>
+      </div>
+
+      <div class="job">
+        <div class="job-header">
+          <div class="job-title">Operational Director</div>
+          <div class="job-date">Apr 2021 – Aug 2023</div>
+        </div>
+        <div class="job-company">Flex Medical Solutions</div>
+        <ul class="job-bullets">
+          <li>Managed hospital logistics including inventory and delivery coordination across <strong>10+ hospital accounts</strong>.</li>
+          <li>Developed and executed sales strategy while coordinating purchase orders to ensure timely procurement and fulfillment.</li>
+        </ul>
+      </div>
+
+      <div class="job">
+        <div class="job-header">
+          <div class="job-title">Operational Manager</div>
+          <div class="job-date">Jul 2020 – Mar 2021</div>
+        </div>
+        <div class="job-company">Transformative Mind Counseling</div>
+        <ul class="job-bullets">
+          <li>Coordinated clinical and administrative schedules; managed client intake and engagement records.</li>
+          <li>Trained staff in <strong>CRM systems</strong> and process management, establishing foundational SOPs.</li>
+        </ul>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="sec-label">02 — Selected Products & Projects</div>
+
+      <div class="job">
+        <div class="job-header">
+          <div class="job-title">PulsePoint — SaaS Product</div>
+          <div class="job-date">2024 – Present</div>
+        </div>
+        <div class="job-company green">Founder & Product Lead</div>
+        <ul class="job-bullets">
+          <li>Authored full PRD, scoped MVP, and led build of a SaaS platform converting community survey data into <strong>quantifiable quality metrics</strong>.</li>
+          <li>Active development with real community partners. KPIs: survey completion rate and time-to-insight reduction.</li>
+        </ul>
+      </div>
+
+      <div class="job">
+        <div class="job-header">
+          <div class="job-title">Boundaries Bootcamp</div>
+          <div class="job-date">2023</div>
+        </div>
+        <div class="job-company">Founder & Curriculum Designer</div>
+        <ul class="job-bullets">
+          <li>Founded and ran a fully online bootcamp on personal and professional boundaries. Second cohort currently in development.</li>
+        </ul>
+      </div>
+
+      <div class="job">
+        <div class="job-header">
+          <div class="job-title">Overstood — AI Web App</div>
+          <div class="job-date">2024</div>
+        </div>
+        <div class="job-company">Builder</div>
+        <ul class="job-bullets">
+          <li>Built React web app using Feynman technique + AI to translate complex content into plain-language explanations. Shipped during build sprint.</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+
+      <div class="s-section">
+        <div class="sec-label green">Achievements</div>
+        <div class="achievement">
+          <div class="ach-title">Top 6 of 90+ Participants</div>
+          <div class="ach-sub">TechTown Mobility Week Hackathon</div>
+          <div class="ach-date">Sept 2025</div>
+        </div>
+        <div class="achievement">
+          <div class="ach-title">DevOps & Venture313</div>
+          <div class="ach-sub">Hackathon competitor</div>
+          <div class="ach-date">2025</div>
+        </div>
+        <div class="notary">✦ Notary Public · Aug 2023</div>
+      </div>
+
+      <div class="s-section">
+        <div class="sec-label">Certifications</div>
+        <div class="s-item">
+          <div class="s-item-name">Google Project Management</div>
+          <div class="s-item-sub">Professional Certificate</div>
+        </div>
+        <div class="s-item">
+          <div class="s-item-name">Lean Six Sigma</div>
+          <div class="s-item-sub">Green Belt</div>
+        </div>
+      </div>
+
+      <div class="s-section">
+        <div class="sec-label">Education</div>
+        <div class="s-item">
+          <div class="s-item-name">Apple Developer Academy</div>
+          <div class="s-item-sub">iOS Development Program</div>
+          <div class="s-item-date">2025 – 2026</div>
+        </div>
+        <div class="s-item">
+          <div class="s-item-name">Oakland Community College</div>
+          <div class="s-item-sub">Coursework · General Studies</div>
+          <div class="s-item-date">2017 – 2019</div>
+        </div>
+        <div class="s-item">
+          <div class="s-item-name">Oakland Early College</div>
+          <div class="s-item-sub">Dual enrollment</div>
+          <div class="s-item-date">2010 – 2012</div>
+        </div>
+      </div>
+
+      <div class="s-section">
+        <div class="sec-label">PM Skills</div>
+        <div class="tags">
+          <span class="tag p">PRD Authoring</span>
+          <span class="tag p">Roadmapping</span>
+          <span class="tag p">MVP Scoping</span>
+          <span class="tag p">Agile / Scrum</span>
+          <span class="tag p">OKRs</span>
+          <span class="tag p">User Research</span>
+          <span class="tag p">Stakeholder Mgmt</span>
+          <span class="tag p">Sprint Planning</span>
+        </div>
+      </div>
+
+      <div class="s-section">
+        <div class="sec-label">Technical</div>
+        <div class="tags">
+          <span class="tag g">Swift / SwiftUI</span>
+          <span class="tag g">Xcode</span>
+          <span class="tag g">React</span>
+          <span class="tag g">HTML / CSS / JS</span>
+          <span class="tag g">CRM Systems</span>
+          <span class="tag g">AI Integration</span>
+        </div>
+      </div>
+
+      <div class="s-section">
+        <div class="sec-label">Community</div>
+        <div class="tags">
+          <span class="tag">Dev Relations</span>
+          <span class="tag">Event Production</span>
+          <span class="tag">Public Speaking</span>
+          <span class="tag">Content Strategy</span>
+          <span class="tag">100k+ Following</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
